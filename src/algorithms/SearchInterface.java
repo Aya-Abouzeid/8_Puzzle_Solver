@@ -36,4 +36,5 @@ public interface SearchInterface {
 	 * @return running time of Algorithm in milliseconds.
 	 */
 	public long runningTime();
+
 }
