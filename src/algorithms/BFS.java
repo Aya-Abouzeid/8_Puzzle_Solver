@@ -44,7 +44,7 @@ public class BFS implements SearchInterface {
 			State s = frontier.remove();
 			explored.add(s);
 
-			if (testGoal(s)) {
+			if (s.testGoal()) {
 				return true;
 			}
 
@@ -59,7 +59,7 @@ public class BFS implements SearchInterface {
 
 	private boolean isExplored(State current, ArrayList<State> explored) {
 		for (State s : explored) {
-			if (areEqual(current.getGame(), s.getGame()))
+			if (current.areEqual(s.getGame()))
 				return true;
 		}
 		return false;
@@ -67,33 +67,10 @@ public class BFS implements SearchInterface {
 
 	private boolean inFrontier(State current, Queue<State> frontier) {
 		for (State s : frontier) {
-			if (areEqual(current.getGame(), s.getGame()))
+			if (current.areEqual(s.getGame()))
 				return true;
 		}
 		return false;
-	}
-
-	private boolean areEqual(int[][] arr1, int[][] arr2) {
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				if (arr1[i][j] != arr2[i][j])
-					return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean testGoal(State s) {
-		int[][] grid = s.getGame();
-		int index = 0;
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				if (grid[i][j] != index)
-					return false;
-				index++;
-			}
-		}
-		return true;
 	}
 
 	@Override
