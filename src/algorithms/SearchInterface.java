@@ -7,7 +7,7 @@ public interface SearchInterface {
 	/**
 	 * Runs the Algorithm.
 	 */
-	public void search();
+	public boolean search(int[] initialState);
 
 	/**
 	 * @return ArrayList of strings representing the path walked to reach the goal
