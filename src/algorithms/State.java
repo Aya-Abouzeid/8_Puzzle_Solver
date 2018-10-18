@@ -14,22 +14,44 @@ public class State {
 		this.parent = parent;
 		
 	}
-	public int[][] getGame() {
+	protected int[][] getGame() {
 		return game;
 	}
-	public void setGame(int[][] game) {
+	protected void setGame(int[][] game) {
 		this.game = game;
 	}
-	public Point getZeroPosition() {
+	protected Point getZeroPosition() {
 		return zeroPosition;
 	}
-	public void setZeroPosition(Point zeroPosition) {
+	protected void setZeroPosition(Point zeroPosition) {
 		this.zeroPosition = zeroPosition;
 	}
-	public ArrayList<State> getNeighbours() {
+	protected ArrayList<State> getNeighbours() {
 		return neighbours;
 	}
-	public void setNeighbours(ArrayList<State> neighbours) {
+	protected void setNeighbours(ArrayList<State> neighbours) {
 		this.neighbours = neighbours;
+	}
+	
+	protected boolean areEqual( int[][] arr2) {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (this.game[i][j] != arr2[i][j])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	protected boolean testGoal() {
+		int index = 0;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (this.game[i][j] != index)
+					return false;
+				index++;
+			}
+		}
+		return true;
 	}
 }
