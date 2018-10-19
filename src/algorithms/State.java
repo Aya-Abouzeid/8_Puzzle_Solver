@@ -14,6 +14,7 @@ public class State {
 		this.parent = parent;
 		
 	}
+<<<<<<< HEAD
 
 	public State getParent() {
 		return parent;
@@ -22,23 +23,27 @@ public class State {
 		this.parent = parent;
 	}
 	public int[][] getGame() {
+=======
+	protected int[][] getGame() {
+>>>>>>> 51e57401b88899cb7ca5f99f1b5362046c399815
 		return game;
 	}
-	public void setGame(int[][] game) {
+	protected void setGame(int[][] game) {
 		this.game = game;
 	}
-	public Point getZeroPosition() {
+	protected Point getZeroPosition() {
 		return zeroPosition;
 	}
-	public void setZeroPosition(Point zeroPosition) {
+	protected void setZeroPosition(Point zeroPosition) {
 		this.zeroPosition = zeroPosition;
 	}
-	public ArrayList<State> getNeighbours() {
+	protected ArrayList<State> getNeighbours() {
 		return neighbours;
 	}
-	public void setNeighbours(ArrayList<State> neighbours) {
+	protected void setNeighbours(ArrayList<State> neighbours) {
 		this.neighbours = neighbours;
 	}
+<<<<<<< HEAD
 	private void swap (int[][]arr, int x1, int y1, int x2, int y2){
 		int temp = arr[x1][y1];
 		arr[x1][y1] = arr[x2][y2];
@@ -111,5 +116,28 @@ public class State {
 
 	}
 		return neigh;
+=======
+	
+	protected boolean areEqual( int[][] arr2) {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (this.game[i][j] != arr2[i][j])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	protected boolean testGoal() {
+		int index = 0;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (this.game[i][j] != index)
+					return false;
+				index++;
+			}
+		}
+		return true;
+>>>>>>> 51e57401b88899cb7ca5f99f1b5362046c399815
 	}
 }
