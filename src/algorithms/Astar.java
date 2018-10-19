@@ -84,16 +84,18 @@ public class Astar {
 				return 1;
 			}
 		});
+		initialState.setH(computeNewH(initialState.getState().getGame()));
 		frontier.add(initialState);
+		
 		ArrayList<AstarState> explored = new ArrayList<>();
-		boolean solutionFound = false;
 		
 		while(!frontier.isEmpty()){
-			if(solutionFound)
-				break;
+			
 			AstarState s = frontier.poll();
 			System.out.println("frontier: "+Arrays.toString(s.getState().getGame()[0]));
 			explored.add(s);
+			if (s.getH() == 0)
+				break;
 			ArrayList<State> posN = s.getState().allPossibleNeighbours();
 
 			for(State st : posN){
@@ -105,9 +107,8 @@ public class Astar {
 					h= computeNewH(st.getGame());
 					System.out.println("value of h  "+h);
 
-					if(h == 0)
-						solutionFound = true;
-					else if(h != -1){
+					
+					if(h != -1){
 					boolean notInFrontier = DecreaseKeyIfInFrontierAndNessesary(st.getGame(),s.getG()+1+h,frontier);
 					if(notInFrontier){
 						
