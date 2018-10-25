@@ -1,4 +1,4 @@
-package Algorithms;
+package algorithms;
 
 import java.awt.Point;
 import java.util.ArrayList;
