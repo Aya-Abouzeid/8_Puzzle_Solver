@@ -64,7 +64,6 @@ public class State{
 			for (int i = 0; i < n.length; ++i) {
 				n[i] = new int[this.game[i].length];
 				for (int j = 0; j < n[i].length; ++j) {
-
 					n[i][j] = this.game[i][j];
 				}
 			}
