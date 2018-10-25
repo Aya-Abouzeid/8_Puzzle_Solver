@@ -15,6 +15,7 @@ public class BFS implements SearchInterface {
 	private int searchDepth;
 	private ArrayList<String> path;
 	private State finalState;
+	private ArrayList<State> explored;
 
 	@Override
 	public boolean search(int[] initialState) {
@@ -44,11 +45,9 @@ public class BFS implements SearchInterface {
 						return false;
 					}
 				}
-
 				state[i][j] = initialState[i * 3 + j];
 			}
 		}
-
 		// check if no zeros found
 		if (zeroIndex.x == -1) {
 			stopTime = System.currentTimeMillis();
@@ -56,10 +55,10 @@ public class BFS implements SearchInterface {
 			return false;
 		}
 
-		State inital = new State(state, zeroIndex, null);
+		State inital = new State(state, zeroIndex, null ,null);
 
 		Queue<State> frontier = new LinkedList<State>();
-		ArrayList<State> explored = new ArrayList<State>();
+		explored = new ArrayList<State>();
 		frontier.add(inital);
 		return BFS(frontier, explored);
 	}
@@ -76,7 +75,6 @@ public class BFS implements SearchInterface {
 				finalState = s;
 				return true;
 			}
-
 			for (State neighbour : s.getNeighbours()) {
 				if (!isExplored(neighbour, explored) && !inFrontier(neighbour, frontier)) {
 					frontier.add(neighbour);
@@ -109,25 +107,50 @@ public class BFS implements SearchInterface {
 	@Override
 	public ArrayList<String> pathToGoal() {
 		// TODO Auto-generated method stub
-		return null;
+		ArrayList<State> parents = new ArrayList<State>();
+		ArrayList<String> path = new ArrayList<String>();
+		State s = finalState;
+		while (s != null) {
+			parents.add(s);
+			s = s.getParent();
+		}
+		for(int i = parents.size()-2 ; i >= 0 ; i-- ) {
+			path.add(parents.get(i).getPath());
+		}
+		return path;
 	}
 
 	@Override
 	public int pathCost() {
 		// TODO Auto-generated method stub
-		return 0;
+		int cost = -1;
+		State s = finalState;
+		while (s != null) {
+			cost++;
+			s = s.getParent();
+		}
+		
+		return cost;
 	}
 
 	@Override
 	public int nodesExpanded() {
 		// TODO Auto-generated method stub
-		return 0;
+		return explored.size();
+		
 	}
 
 	@Override
 	public int searchDepth() {
 		// TODO Auto-generated method stub
-		return 0;
+		int depth = -1;
+		State s = finalState;
+		while (s != null) {
+			depth++;
+			s = s.getParent();
+		}
+		
+		return depth;
 	}
 
 	@Override
