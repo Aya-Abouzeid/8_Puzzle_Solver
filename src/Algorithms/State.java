@@ -3,18 +3,19 @@ package Algorithms;
 import java.awt.Point;
 import java.util.ArrayList;
 
-public class State implements Comparable<State>{
+public class State{
 	
 	private int game[][] = new int[3][3];
 	private Point zeroPosition;
 	private ArrayList<State> neighbours = new ArrayList<>();
 	private State parent;
+	private String path;
 
-	public State(int[][] game, Point zeroPosition, State parent) {
+	public State(int[][] game, Point zeroPosition, State parent, String path) {
 		this.game = game;
 		this.zeroPosition = zeroPosition;
 		this.parent = parent;
-
+		this.path = path;
 	}
 
 	public State getParent() {
@@ -70,7 +71,7 @@ public class State implements Comparable<State>{
 
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x + 1, zeroPosition.y);
 
-			neigh.add(new State(n, new Point(zeroPosition.x + 1, zeroPosition.y), this));
+			neigh.add(new State(n, new Point(zeroPosition.x + 1, zeroPosition.y), this, "Down"));
 		}
 
 		if (zeroPosition.x - 1 >= 0 && !( this.parent != null && zeroPosition.x - 1 == this.parent.zeroPosition.x)) {
@@ -84,7 +85,7 @@ public class State implements Comparable<State>{
 				}
 			}
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x - 1, zeroPosition.y);
-			neigh.add(new State(n, new Point(zeroPosition.x - 1, zeroPosition.y), this));
+			neigh.add(new State(n, new Point(zeroPosition.x - 1, zeroPosition.y), this, "Up"));
 
 		}
 
@@ -98,7 +99,7 @@ public class State implements Comparable<State>{
 				}
 			}
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x, zeroPosition.y + 1);
-			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y + 1), this));
+			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y + 1), this, "Right"));
 
 		}
 
@@ -112,7 +113,7 @@ public class State implements Comparable<State>{
 				}
 			}
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x, zeroPosition.y - 1);
-			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y - 1), this));
+			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y - 1), this, "Left"));
 
 		}
 
@@ -142,11 +143,8 @@ public class State implements Comparable<State>{
 		return true;
 
 	}
-
-	@Override
-	public int compareTo(State o) {
-		if(game[0][0] == o.getGame()[0][0])
-			return 0;
-		return -1;
+	
+	public String getPath() {
+		return path;
 	}
 }
