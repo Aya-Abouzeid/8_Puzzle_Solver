@@ -8,7 +8,7 @@ public class Main {
 		int [][] arr = {{1,2,0},{3,4,5},{6,7,8}};
 		Astar a= new Astar();
 		State s = new State(arr,new Point(0,2),null, null);
-		a.algorithm(s);
+//		a.algorithm(s);
 
 	}
 
