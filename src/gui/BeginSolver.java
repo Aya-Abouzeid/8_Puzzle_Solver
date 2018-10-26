@@ -72,5 +72,9 @@ public class BeginSolver extends Application {
 	public void startApp(String args[]) throws ClassNotFoundException, SQLException {
 		launch(args);
 	}
+	
+	public static void main(String[] args) {
+		launch(args);
+	}
 
 }
