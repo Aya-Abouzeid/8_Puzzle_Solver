@@ -26,20 +26,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import src.algorithms.Astar;
-import src.algorithms.AstarState;
-import src.algorithms.BFS;
-import src.algorithms.DFS;
-import src.algorithms.State;
+import algorithms.Astar;
+import algorithms.AstarState;
+import algorithms.BFS;
+import algorithms.DFS;
+import algorithms.State;
 
 public class BeginSolver extends Application {
 	private BFS bfs = new BFS();
 	private DFS dfs = new DFS();
-	private Astar aStar ;
+	private Astar aStar;
 
 	private Scene scene;
 	private Color[] colors = { Color.LIGHTSKYBLUE, Color.SANDYBROWN, Color.THISTLE, Color.PALEGREEN,
 			Color.LIGHTSTEELBLUE, Color.AQUA, Color.ROSYBROWN, Color.KHAKI, Color.LIGHTPINK };
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
@@ -54,7 +55,8 @@ public class BeginSolver extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
-	private int[] handleGrid(GridPane gridPane){
+
+	private int[] handleGrid(GridPane gridPane) {
 		Set<String> set = new HashSet<>();
 		// get puzzle text
 		for (Node n : gridPane.getChildren()) {
@@ -65,11 +67,11 @@ public class BeginSolver extends Application {
 			}
 		}
 		// Show error message in case of similar digits exist
-		if(set.size() < 9) {
+		if (set.size() < 9) {
 			Alert alert = new Alert(AlertType.ERROR, "Invalid table, cell digits must be different !", ButtonType.OK);
 			alert.showAndWait();
 			return null;
-		}else {
+		} else {
 			int[] initialState = new int[9];
 			int i = 0;
 			for (Node n : gridPane.getChildren()) {
@@ -77,29 +79,31 @@ public class BeginSolver extends Application {
 				if (className.equals("TextField")) {
 					TextField textField = (TextField) n;
 					textField.setEditable(false);
-					
+
 					initialState[i++] = textField.getText().isEmpty() ? 0 : Integer.parseInt(textField.getText());
 				}
 			}
-	
+
 			return initialState;
 		}
 	}
-	private void show(GridPane gridPane,int[][]a){
-		int i= 0 , j = 0;
+
+	private void show(GridPane gridPane, int[][] a) {
+		int i = 0, j = 0;
 		for (Node n : gridPane.getChildren()) {
 			String className = n.getClass().getName().split("\\.")[3];
 			if (className.equals("TextField")) {
 				TextField temp = (TextField) n;
 				temp.setText(String.valueOf(a[i][j]));
 				j++;
-				if(j==3){
+				if (j == 3) {
 					i++;
-					j=0;
+					j = 0;
 				}
 			}
 		}
 	}
+
 	private void addFields(GridPane gridPane, Stage primaryStage) {
 		gridPane.setAlignment(Pos.CENTER);
 		int n = 0;
@@ -110,7 +114,7 @@ public class BeginSolver extends Application {
 				rec.setWidth(100);
 				rec.setHeight(100);
 				rec.setFill(colors[n]);
-				gridPane.add(rec, col, row);
+				gridPane.add(rec, col+1, row);
 				inputField.setBackground(Background.EMPTY);
 				inputField.setPrefWidth(60);
 				inputField.setPrefHeight(60);
@@ -124,26 +128,26 @@ public class BeginSolver extends Application {
 						return change;
 					}
 				}));
-				gridPane.add(inputField, col, row);
+				gridPane.add(inputField, col+1, row);
 				n++;
 			}
 		}
 		Button BFS = new Button();
 		BFS.setText("BFS");
 		BFS.setPrefSize(100, 35);
-		
+
 		Button DFS = new Button();
 		DFS.setText("DFS");
 		DFS.setPrefSize(100, 35);
-		
+
 		Button A1 = new Button();
 		A1.setText("A* Man");
 		A1.setPrefSize(140, 45);
-		
+
 		Button A2 = new Button();
 		A2.setText("A* Euc");
 		A2.setPrefSize(120, 45);
-		
+
 		Button reset = new Button();
 		reset.setText("Reset");
 		reset.setPrefSize(100, 35);
@@ -153,9 +157,9 @@ public class BeginSolver extends Application {
 
 		gridPane.add(BFS, 0, 6);
 		gridPane.add(DFS, 1, 6);
-		gridPane.add(A1, 2, 6);
+		gridPane.add(A1, 4, 6);
 		gridPane.add(A2, 3, 6);
-		gridPane.add(reset, 4, 6);
+		gridPane.add(reset, 2, 6);
 
 		BFS.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
 		DFS.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
@@ -165,50 +169,53 @@ public class BeginSolver extends Application {
 		reset.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
 
 		gridPane.setAlignment(Pos.BOTTOM_CENTER);
-		gridPane.setPadding(new Insets(49, 49, 56, 280));
+		gridPane.setPadding(new Insets(40, 49, 56, 140));
 
 		BFS.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int [] initialState = handleGrid(gridPane);
+				int[] initialState = handleGrid(gridPane);
 				System.out.println(initialState != null);
 
 				ArrayList<int[][]> allPath = new ArrayList<>();
-				if(initialState != null){
+				if (initialState != null) {
 					boolean sucess = bfs.search(initialState);
 					System.out.println("Done");
-					if(sucess){
+					if (sucess) {
 						State s = bfs.getFinalState();
 						while (s != null) {
 							System.out.println("Here");
 							allPath.add(s.getGame());
 							s = s.getParent();
 						}
-						for(int i = allPath.size()-1 ; i>-1;i--){
-							show(gridPane,allPath.get(i));	 
+						for (int i = allPath.size() - 1; i > -1; i--) {
+							show(gridPane, allPath.get(i));
 						}
-					}				
+					}
 				}
+				System.out.println("success");
+
 			}
+
 		});
 		DFS.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int [] initialState = handleGrid(gridPane);
+				int[] initialState = handleGrid(gridPane);
 				ArrayList<int[][]> allPath = new ArrayList<>();
-				if(initialState != null){
-					if(dfs.search(initialState)){
+				if (initialState != null) {
+					if (dfs.search(initialState)) {
 						State s = dfs.getFinalState();
 						while (s != null) {
 							allPath.add(s.getGame());
 							s = s.getParent();
 						}
-						for(int i = allPath.size()-1 ; i>-1;i--){
-							show(gridPane,allPath.get(i));	 
+						for (int i = allPath.size() - 1; i > -1; i--) {
+							show(gridPane, allPath.get(i));
 						}
-					}	
+					}
 				}
 				System.out.println("Done");
 
@@ -218,19 +225,19 @@ public class BeginSolver extends Application {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int [] initialState = handleGrid(gridPane);
+				int[] initialState = handleGrid(gridPane);
 				ArrayList<int[][]> allPath = new ArrayList<>();
-				if(initialState != null){
+				if (initialState != null) {
 					aStar = new Astar(false);
-					if(aStar.search(initialState)){
+					if (aStar.search(initialState)) {
 						AstarState finalState = aStar.getFinalState();
 						State s = finalState.getState();
 						while (s != null) {
 							allPath.add(s.getGame());
 							s = s.getParent();
 						}
-						for(int i = allPath.size()-1 ; i>-1;i--){
-							show(gridPane,allPath.get(i));	 
+						for (int i = allPath.size() - 1; i > -1; i--) {
+							show(gridPane, allPath.get(i));
 						}
 					}
 				}
@@ -240,31 +247,30 @@ public class BeginSolver extends Application {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int [] initialState = handleGrid(gridPane);
+				int[] initialState = handleGrid(gridPane);
 				ArrayList<int[][]> allPath = new ArrayList<>();
-				if(initialState != null){
-				aStar = new Astar(true);
-					if(aStar.search(initialState)){
+				if (initialState != null) {
+					aStar = new Astar(true);
+					if (aStar.search(initialState)) {
 						AstarState finalState = aStar.getFinalState();
 						State s = finalState.getState();
 						while (s != null) {
 							allPath.add(s.getGame());
 							s = s.getParent();
 						}
-						for(int i = allPath.size()-1 ; i>-1;i--){
-							show(gridPane,allPath.get(i));	 
+						for (int i = allPath.size() - 1; i > -1; i--) {
+							show(gridPane, allPath.get(i));
 						}
 					}
 				}
-			 }
+			}
 		});
-		
-				
+
 		reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				
+
 				// clear text fields
 				for (Node n : gridPane.getChildren()) {
 					String className = n.getClass().getName().split("\\.")[3];
