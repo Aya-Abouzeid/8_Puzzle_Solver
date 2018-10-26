@@ -109,14 +109,14 @@ public class Astar {
 
 					
 					if(h != -1){
-					boolean notInFrontier = DecreaseKeyIfInFrontierAndNessesary(st.getGame(),s.getG()+1+h,frontier);
-					if(notInFrontier){
-						
-						s.getState().getNeighbours().add(st);
-						AstarState newAstarState = new AstarState(st, s.getG()+1, h);
-						frontier.add(newAstarState);
-
-					}
+						boolean notInFrontier = DecreaseKeyIfInFrontierAndNessesary(st.getGame(),s.getG()+1+h,frontier);
+						if(notInFrontier){
+							
+							s.getState().getNeighbours().add(st);
+							AstarState newAstarState = new AstarState(st, s.getG()+1, h);
+							frontier.add(newAstarState);
+		
+						}
 					}
 				}
 				
