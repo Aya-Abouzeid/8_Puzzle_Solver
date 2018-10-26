@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/lib/ant-javafx.jar"/>
-	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/lib/javafx-mx.jar"/>
-	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jfxswt.jar"/>
-	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/jfxrt.jar"/>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Amira/Downloads/javafx-0.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Amira/Downloads/javafx-0.2-sources.jar (1).zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

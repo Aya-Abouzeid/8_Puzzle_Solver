@@ -1,8 +1,10 @@
-package gui;
+package src.gui;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -24,15 +26,26 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import src.algorithms.Astar;
+import src.algorithms.AstarState;
+import src.algorithms.BFS;
+import src.algorithms.DFS;
+import src.algorithms.State;
 
 public class BeginSolver extends Application {
+	private BFS bfs = new BFS();
+	private DFS dfs = new DFS();
+	private Astar aStar;
+	private ArrayList<int[][]> allPath = new ArrayList<>();
 	private Scene scene;
 	private Color[] colors = { Color.LIGHTSKYBLUE, Color.SANDYBROWN, Color.THISTLE, Color.PALEGREEN,
 			Color.LIGHTSTEELBLUE, Color.AQUA, Color.ROSYBROWN, Color.KHAKI, Color.LIGHTPINK };
+	private GridPane gridPane = new GridPane();
+	private Thread backgroundThread;
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
-		GridPane gridPane = new GridPane();
 		Group group = new Group();
 		scene = new Scene(group, 860, 550, Color.BEIGE);
 
@@ -42,6 +55,54 @@ public class BeginSolver extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+	}
+
+	private int[] handleGrid(GridPane gridPane) {
+		Set<String> set = new HashSet<>();
+		// get puzzle text
+		for (Node n : gridPane.getChildren()) {
+			String className = n.getClass().getName().split("\\.")[3];
+			if (className.equals("TextField")) {
+				TextField temp = (TextField) n;
+				set.add(temp.getText());
+			}
+		}
+		// Show error message in case of similar digits exist
+		if (set.size() < 9) {
+			Alert alert = new Alert(AlertType.ERROR, "Invalid table, cell digits must be different !", ButtonType.OK);
+			alert.showAndWait();
+			return null;
+		} else {
+			int[] initialState = new int[9];
+			int i = 0;
+			for (Node n : gridPane.getChildren()) {
+				String className = n.getClass().getName().split("\\.")[3];
+				if (className.equals("TextField")) {
+					TextField textField = (TextField) n;
+					textField.setEditable(false);
+
+					initialState[i++] = textField.getText().isEmpty() ? 0 : Integer.parseInt(textField.getText());
+				}
+			}
+
+			return initialState;
+		}
+	}
+
+	private void show(GridPane gridPane, int[][] a) {
+		int i = 0, j = 0;
+		for (Node n : gridPane.getChildren()) {
+			String className = n.getClass().getName().split("\\.")[3];
+			if (className.equals("TextField")) {
+				TextField temp = (TextField) n;
+				temp.setText(String.valueOf(a[i][j]));
+				j++;
+				if (j == 3) {
+					i++;
+					j = 0;
+				}
+			}
+		}
 	}
 
 	private void addFields(GridPane gridPane, Stage primaryStage) {
@@ -54,7 +115,7 @@ public class BeginSolver extends Application {
 				rec.setWidth(100);
 				rec.setHeight(100);
 				rec.setFill(colors[n]);
-				gridPane.add(rec, col, row);
+				gridPane.add(rec, col + 1, row);
 				inputField.setBackground(Background.EMPTY);
 				inputField.setPrefWidth(60);
 				inputField.setPrefHeight(60);
@@ -68,13 +129,26 @@ public class BeginSolver extends Application {
 						return change;
 					}
 				}));
-				gridPane.add(inputField, col, row);
+				gridPane.add(inputField, col + 1, row);
 				n++;
 			}
 		}
-		Button solve = new Button();
-		solve.setText("Solve!");
-		solve.setPrefSize(100, 35);
+		Button BFS = new Button();
+		BFS.setText("BFS");
+		BFS.setPrefSize(100, 35);
+
+		Button DFS = new Button();
+		DFS.setText("DFS");
+		DFS.setPrefSize(100, 35);
+
+		Button A1 = new Button();
+		A1.setText("A* Man");
+		A1.setPrefSize(140, 45);
+
+		Button A2 = new Button();
+		A2.setText("A* Euc");
+		A2.setPrefSize(120, 45);
+
 		Button reset = new Button();
 		reset.setText("Reset");
 		reset.setPrefSize(100, 35);
@@ -82,56 +156,200 @@ public class BeginSolver extends Application {
 		gridPane.setVgap(10);
 		gridPane.setHgap(10);
 
-		gridPane.add(solve, 0, 6);
+		gridPane.add(BFS, 0, 6);
+		gridPane.add(DFS, 1, 6);
+		gridPane.add(A1, 4, 6);
+		gridPane.add(A2, 3, 6);
 		gridPane.add(reset, 2, 6);
 
-		solve.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
+		BFS.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
+		DFS.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
+		A1.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
+		A2.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
+
 		reset.setStyle("-fx-background-color: #006064; -fx-text-fill: white; -fx-font: normal bold 25px 'serif' ;");
 
 		gridPane.setAlignment(Pos.BOTTOM_CENTER);
-		gridPane.setPadding(new Insets(49, 49, 56, 280));
+		gridPane.setPadding(new Insets(40, 49, 56, 140));
 
-		solve.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		BFS.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				
-				Set<String> set = new HashSet<>();
-				// get puzzle text
-				for (Node n : gridPane.getChildren()) {
-					String className = n.getClass().getName().split("\\.")[3];
-					if (className.equals("TextField")) {
-						TextField temp = (TextField) n;
-						set.add(temp.getText());
-					}
-				}
-				// Show error message in case of similar digits exist
-				if(set.size() < 9) {
-					Alert alert = new Alert(AlertType.ERROR, "Invalid table, cell digits must be different !", ButtonType.OK);
-					alert.showAndWait();
-				}else {
-					int[] initialState = new int[9];
-					int i = 0;
-					for (Node n : gridPane.getChildren()) {
-						String className = n.getClass().getName().split("\\.")[3];
-						if (className.equals("TextField")) {
-							TextField textField = (TextField) n;
-							textField.setEditable(false);
-							
-							initialState[i++] = textField.getText().isEmpty() ? 0 : Integer.parseInt(textField.getText());
+				int[] initialState = handleGrid(gridPane);
+				System.out.println(initialState != null);
+
+				if (initialState != null) {
+					Runnable task = new Runnable() {
+						public void run() {
+							try {
+								boolean success = bfs.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+bfs.pathCost());
+								System.out.println("Running Time: "+bfs.runningTime());
+								System.out.println("Nodes Expanded: "+bfs.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < bfs.pathToGoal().size();k++){
+									System.out.print(" "+bfs.pathToGoal().get(k)+" ");
+								}
+								}
+
+								notifyGUI(success,0);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
-					}
-					for(int j : initialState)
-						System.out.println(j);
+					};
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					backgroundThread.start();
+					System.out.println("Done");
+
 				}
+				System.out.println("success");
 
 			}
+
 		});
+
+		DFS.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				int[] initialState = handleGrid(gridPane);
+				System.out.println("a");
+
+				if (initialState != null) {
+
+					Runnable task = new Runnable() {
+						
+						public void run() {
+
+							try {
+								boolean success = dfs.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+dfs.pathCost());
+								System.out.println("Running Time: "+dfs.runningTime());
+								System.out.println("Nodes Expanded: "+dfs.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < dfs.pathToGoal().size();k++){
+									System.out.print(" "+dfs.pathToGoal().get(k)+" ");
+								}
+								}
+								notifyGUI(success,1);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								System.out.println("e");
+
+								e.printStackTrace();
+							}
+						}
+					};
+					System.out.println("f");
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					System.out.println("g");
+
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					System.out.println("h");
+
+					backgroundThread.start();
+					System.out.println("Done");
+			}
+		}
+		});
+		A1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				int[] initialState = handleGrid(gridPane);
+				if (initialState != null) {
+					aStar = new Astar(false);
+					Runnable task = new Runnable() {
+						public void run() {
+							try {
+								boolean success = aStar.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+aStar.pathCost());
+								System.out.println("Running Time: "+aStar.runningTime());
+								System.out.println("Nodes Expanded: "+aStar.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < aStar.pathToGoal().size();k++){
+									System.out.print(" "+aStar.pathToGoal().get(k)+" ");
+								}
+								}
+								notifyGUI(success,2);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					};
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					backgroundThread.start();
+					
+
+				}
+			}
+		});
+		A2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				int[] initialState = handleGrid(gridPane);
+				if (initialState != null) {
+					aStar = new Astar(true);
+					Runnable task = new Runnable() {
+						public void run() {
+							try {
+								boolean success = aStar.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+aStar.pathCost());
+								System.out.println("Running Time: "+aStar.runningTime());
+								System.out.println("Nodes Expanded: "+aStar.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < aStar.pathToGoal().size();k++){
+									System.out.print(" "+aStar.pathToGoal().get(k)+" ");
+								}
+								}
+								notifyGUI(success,2);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					};
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					backgroundThread.start();
+					System.out.println("Done");
+				}
+			}
+			
+		});
+
 		reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				
+
 				// clear text fields
 				for (Node n : gridPane.getChildren()) {
 					String className = n.getClass().getName().split("\\.")[3];
@@ -144,6 +362,32 @@ public class BeginSolver extends Application {
 			}
 		});
 
+	}
+
+	public void notifyGUI(boolean success , int algorithm) throws InterruptedException {
+		System.out.println("there");
+
+		if (success) {
+			System.out.println("theere");
+
+			State s=null ;
+			allPath = new ArrayList<>();
+			if(algorithm == 0)
+				s = bfs.getFinalState();
+			if(algorithm == 1)
+				s = dfs.getFinalState();
+			if(algorithm == 2)
+				s = aStar.getFinalState().getState();
+			System.out.println(s == null);
+			while (s != null) {
+				allPath.add(s.getGame());
+				s = s.getParent();
+			}
+			for (int i = allPath.size() - 1; i > -1; i--) {
+				show(gridPane, allPath.get(i));
+				backgroundThread.sleep(2000);
+			}
+		}
 	}
 
 	public void startApp(String args[]) throws ClassNotFoundException, SQLException {

@@ -1,4 +1,4 @@
-package algorithms;
+package src.algorithms;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -14,9 +14,11 @@ public class Astar implements SearchInterface {
 	private long stopTime;
 	private AstarState finalState;
 	private ArrayList<AstarState> explored;
-
+	private boolean euc;
 	
-	public Astar(){
+	public Astar(boolean euc){
+		this.euc = euc;
+		// Saving Goal state in order to use it to compute the H(n)
 		goalState.put(0, new Point(0,0));
 		goalState.put(1, new Point(0,1));
 		goalState.put(2, new Point(0,2));
@@ -29,11 +31,11 @@ public class Astar implements SearchInterface {
 
 		
 	}
-	private void swap (int[][]arr, int x1, int y1, int x2, int y2){
-		int temp = arr[x1][y1];
-		arr[x1][y1] = arr[x2][y2];
-		arr[x2][y2] = temp;
-	}
+	/***
+	 * Check if any of the State neighbours were explored before or not
+	 * @param arr
+	 * @return
+	 */
 	private boolean checkNotInExplored(int[][] arr){
 		for(AstarState s : explored){
 			if (Arrays.toString(s.getState().getGame()[0]).equals(Arrays.toString(arr[0])) 
@@ -45,22 +47,36 @@ public class Astar implements SearchInterface {
 		}
 		return true;
 	}
+	/***
+	 * Computing H(n) using Manhattan heuristic or Euclidian heuristic using euc boolean
+	 * @param arr
+	 * @return
+	 */
 	private int computeNewH(int [][] arr){
 		int h = 0 ;
-		boolean finalSt = false;
+		
 		for (int i = 0 ; i < 3 ; i++){
 			for(int j = 0 ; j < 3 ; j++){
 				if(arr[i][j] == 0)
 					continue;
 				Point rightPos = goalState.get(arr[i][j]);
+				if(!euc)
 				h+= Math.abs(i-rightPos.x) + Math.abs(j-rightPos.y);
-				if(i==0 && j==0 && h==0)
-					finalSt = true;
+				else{
+				h+= Math.sqrt(Math.pow((i-rightPos.x),2) + Math.pow(j-rightPos.y,2));
+				}
 			}
 		}
-		
 		return h;
 	}
+	/***
+	 *  It searchs for the current neighbour in the frontier List.
+	 *  if it was present in frontier and it's cost > new cost then decrease it's key and change it's parent.
+	 * @param arr
+	 * @param cost
+	 * @param frontier
+	 * @return
+	 */
 	private boolean DecreaseKeyIfInFrontierAndNessesary(int[][] arr, int cost, PriorityQueue<AstarState> frontier){
 		for(AstarState s : frontier){
 
@@ -70,11 +86,13 @@ public class Astar implements SearchInterface {
 					){
 				if(cost < s.getCost())
 					s.setCost(cost);
+					s.getState().setParent(explored.get(explored.size()-1).getState());
 				return false;
 			}	
 		}
 		return true;
 	}
+	
 	public boolean astarAlgo(State state) {
 		
 		AstarState initialState = new AstarState(state, 0, 0);
@@ -201,6 +219,9 @@ public class Astar implements SearchInterface {
 		}
 
 		return depth;
+	}
+	public AstarState getFinalState(){
+		return finalState;
 	}
 	@Override
 	public long runningTime() {

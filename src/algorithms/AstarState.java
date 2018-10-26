@@ -1,7 +1,7 @@
-package algorithms;
+package src.algorithms;
+
 
 public class AstarState implements Comparable<AstarState> {
-	
 	private State state;
 	private int g, h, cost;
 	
