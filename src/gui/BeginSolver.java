@@ -36,15 +36,16 @@ public class BeginSolver extends Application {
 	private BFS bfs = new BFS();
 	private DFS dfs = new DFS();
 	private Astar aStar;
-
+	private ArrayList<int[][]> allPath = new ArrayList<>();
 	private Scene scene;
 	private Color[] colors = { Color.LIGHTSKYBLUE, Color.SANDYBROWN, Color.THISTLE, Color.PALEGREEN,
 			Color.LIGHTSTEELBLUE, Color.AQUA, Color.ROSYBROWN, Color.KHAKI, Color.LIGHTPINK };
+	private GridPane gridPane = new GridPane();
+	private Thread backgroundThread;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
-		GridPane gridPane = new GridPane();
 		Group group = new Group();
 		scene = new Scene(group, 860, 550, Color.BEIGE);
 
@@ -114,7 +115,7 @@ public class BeginSolver extends Application {
 				rec.setWidth(100);
 				rec.setHeight(100);
 				rec.setFill(colors[n]);
-				gridPane.add(rec, col+1, row);
+				gridPane.add(rec, col + 1, row);
 				inputField.setBackground(Background.EMPTY);
 				inputField.setPrefWidth(60);
 				inputField.setPrefHeight(60);
@@ -128,7 +129,7 @@ public class BeginSolver extends Application {
 						return change;
 					}
 				}));
-				gridPane.add(inputField, col+1, row);
+				gridPane.add(inputField, col + 1, row);
 				n++;
 			}
 		}
@@ -178,27 +179,34 @@ public class BeginSolver extends Application {
 				int[] initialState = handleGrid(gridPane);
 				System.out.println(initialState != null);
 
-				ArrayList<int[][]> allPath = new ArrayList<>();
 				if (initialState != null) {
-					boolean sucess = bfs.search(initialState);
+					Runnable task = new Runnable() {
+						public void run() {
+							try {
+								boolean sucess = bfs.search(initialState);
+								notifyGUI(sucess);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					};
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					backgroundThread.start();
 					System.out.println("Done");
-					if (sucess) {
-						State s = bfs.getFinalState();
-						while (s != null) {
-							System.out.println("Here");
-							allPath.add(s.getGame());
-							s = s.getParent();
-						}
-						for (int i = allPath.size() - 1; i > -1; i--) {
-							show(gridPane, allPath.get(i));
-						}
-					}
+
 				}
 				System.out.println("success");
 
 			}
 
 		});
+
 		DFS.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -283,6 +291,24 @@ public class BeginSolver extends Application {
 			}
 		});
 
+	}
+
+	public void notifyGUI(boolean success) throws InterruptedException {
+		System.out.println("reached here");
+
+		if (success) {
+			allPath = new ArrayList<>();
+			State s = bfs.getFinalState();
+			System.out.println(s == null);
+			while (s != null) {
+				allPath.add(s.getGame());
+				s = s.getParent();
+			}
+			for (int i = allPath.size() - 1; i > -1; i--) {
+				show(gridPane, allPath.get(i));
+				backgroundThread.sleep(2000);
+			}
+		}
 	}
 
 	public void startApp(String args[]) throws ClassNotFoundException, SQLException {
