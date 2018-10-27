@@ -201,6 +201,7 @@ public class BeginSolver extends Application {
 											System.out.print(" " + bfs.pathToGoal().get(k) + " ");
 										}
 										System.out.println();
+										System.out.println();
 
 									}
 
@@ -250,6 +251,8 @@ public class BeginSolver extends Application {
 											System.out.print(" " + dfs.pathToGoal().get(k) + " ");
 										}
 										System.out.println();
+										System.out.println();
+
 
 									}
 									notifyGUI(success, 1);
@@ -295,6 +298,7 @@ public class BeginSolver extends Application {
 											System.out.print(" " + aStar.pathToGoal().get(k) + " ");
 										}
 										System.out.println();
+										System.out.println();
 
 									}
 									notifyGUI(success, 2);
@@ -338,6 +342,7 @@ public class BeginSolver extends Application {
 										for (int k = 0; k < aStar.pathToGoal().size(); k++) {
 											System.out.print(" " + aStar.pathToGoal().get(k) + " ");
 										}
+										System.out.println();
 										System.out.println();
 
 									}
