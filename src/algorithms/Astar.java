@@ -112,12 +112,7 @@ public class Astar implements SearchInterface {
 			
 			AstarState s = frontier.poll();
 			explored.add(s);
-			for(int i = 0 ; i < 3 ; i++){
-				for(int j = 0 ; j <3 ; j++){
-					System.out.print(s.getState().getGame()[i][j]+" ");
-				}
-			}
-			System.out.println("  ");
+			
 			if (s.getH() == 0){
 				stopTime = System.currentTimeMillis();
 				elapsedTime = stopTime - startTime;
