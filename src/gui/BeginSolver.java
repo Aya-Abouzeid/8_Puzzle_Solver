@@ -195,6 +195,8 @@ public class BeginSolver extends Application {
 										for (int k = 0; k < bfs.pathToGoal().size(); k++) {
 											System.out.print(" " + bfs.pathToGoal().get(k) + " ");
 										}
+										System.out.println();
+
 									}
 
 									notifyGUI(success, 0);
@@ -242,6 +244,8 @@ public class BeginSolver extends Application {
 										for (int k = 0; k < dfs.pathToGoal().size(); k++) {
 											System.out.print(" " + dfs.pathToGoal().get(k) + " ");
 										}
+										System.out.println();
+
 									}
 									notifyGUI(success, 1);
 								} catch (InterruptedException e) {
@@ -285,6 +289,8 @@ public class BeginSolver extends Application {
 										for (int k = 0; k < aStar.pathToGoal().size(); k++) {
 											System.out.print(" " + aStar.pathToGoal().get(k) + " ");
 										}
+										System.out.println();
+
 									}
 									notifyGUI(success, 2);
 								} catch (InterruptedException e) {
@@ -327,6 +333,8 @@ public class BeginSolver extends Application {
 										for (int k = 0; k < aStar.pathToGoal().size(); k++) {
 											System.out.print(" " + aStar.pathToGoal().get(k) + " ");
 										}
+										System.out.println();
+
 									}
 									notifyGUI(success, 2);
 								} catch (InterruptedException e) {
