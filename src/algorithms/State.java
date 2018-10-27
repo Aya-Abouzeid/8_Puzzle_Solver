@@ -1,4 +1,4 @@
-package algorithms;
+package src.algorithms;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class State {
 		this.parent = parent;
 	}
 
-	protected int[][] getGame() {
+	public int[][] getGame() {
 		return game;
 	}
 

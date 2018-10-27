@@ -1,4 +1,4 @@
-package gui;
+package src.gui;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,11 +26,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import algorithms.Astar;
-import algorithms.AstarState;
-import algorithms.BFS;
-import algorithms.DFS;
-import algorithms.State;
+import src.algorithms.Astar;
+import src.algorithms.AstarState;
+import src.algorithms.BFS;
+import src.algorithms.DFS;
+import src.algorithms.State;
 
 public class BeginSolver extends Application {
 	private BFS bfs = new BFS();

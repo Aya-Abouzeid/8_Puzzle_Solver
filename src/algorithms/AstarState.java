@@ -1,4 +1,4 @@
-package algorithms;
+package src.algorithms;
 
 
 public class AstarState implements Comparable<AstarState> {

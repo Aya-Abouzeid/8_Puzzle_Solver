@@ -2,5 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Amira/Downloads/javafx-0.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Amira/Downloads/javafx-0.2-sources.jar (1).zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
