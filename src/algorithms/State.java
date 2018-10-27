@@ -10,6 +10,10 @@ public class State {
 	private State parent;
 	private String path;
 
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 	public State(int[][] game, Point zeroPosition, State parent, String path) {
 		this.game = game;
 		this.zeroPosition = zeroPosition;

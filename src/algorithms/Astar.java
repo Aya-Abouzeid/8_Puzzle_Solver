@@ -74,24 +74,28 @@ public class Astar implements SearchInterface {
 	}
 
 	/***
-	 * It searchs for the current neighbour in the frontier List. if it was present
+	 * It searches for the current neighbour in the frontier List. if it was present
 	 * in frontier and it's cost > new cost then decrease it's key and change it's
 	 * parent.
 	 * 
-	 * @param arr
+	 * @param st
 	 * @param cost
 	 * @param frontier
 	 * @return
 	 */
-	private boolean DecreaseKeyIfInFrontierAndNessesary(int[][] arr, int cost, PriorityQueue<AstarState> frontier) {
+	private boolean DecreaseKeyIfInFrontierAndNessesary(State st, int cost, PriorityQueue<AstarState> frontier) {
+		int[][] arr = st.getGame();
 		for (AstarState s : frontier) {
 
 			if (Arrays.toString(s.getState().getGame()[0]).equals(Arrays.toString(arr[0]))
 					&& Arrays.toString(s.getState().getGame()[1]).equals(Arrays.toString(arr[1]))
 					&& Arrays.toString(s.getState().getGame()[2]).equals(Arrays.toString(arr[2]))) {
-				if (cost < s.getCost())
+				if (cost < s.getCost()) {
 					s.setCost(cost);
-				s.getState().setParent(explored.get(explored.size() - 1).getState());
+					s.getState().setParent(st.getParent());
+					s.getState().setPath(st.getPath());
+				}
+
 				return false;
 			}
 		}
@@ -132,8 +136,7 @@ public class Astar implements SearchInterface {
 				int h;
 				if (notExplored) {
 					h = computeNewH(st.getGame());
-					boolean notInFrontier = DecreaseKeyIfInFrontierAndNessesary(st.getGame(), s.getG() + 1 + h,
-							frontier);
+					boolean notInFrontier = DecreaseKeyIfInFrontierAndNessesary(st, s.getG() + 1 + h, frontier);
 					if (notInFrontier) {
 
 						s.getState().getNeighbours().add(st);

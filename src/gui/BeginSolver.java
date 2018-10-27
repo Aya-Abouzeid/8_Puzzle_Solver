@@ -253,7 +253,6 @@ public class BeginSolver extends Application {
 										System.out.println();
 										System.out.println();
 
-
 									}
 									notifyGUI(success, 1);
 								} catch (InterruptedException e) {
