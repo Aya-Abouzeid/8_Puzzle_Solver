@@ -51,8 +51,8 @@ public class State {
 	protected void setZeroPosition(Point zeroPosition) {
 		this.zeroPosition = zeroPosition;
 	}
-	
-	//return state's neighbours
+
+	// return state's neighbours
 	protected ArrayList<State> getNeighbours() {
 		return allPossibleNeighbours();
 	}

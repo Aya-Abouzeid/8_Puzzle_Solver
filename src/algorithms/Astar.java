@@ -1,4 +1,4 @@
-package src.algorithms;
+package algorithms;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -8,112 +8,117 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 public class Astar implements SearchInterface {
-	private HashMap <Integer,Point> goalState = new HashMap<>();	
+	private HashMap<Integer, Point> goalState = new HashMap<>();
 	private long elapsedTime;
 	private long startTime;
 	private long stopTime;
 	private AstarState finalState;
 	private ArrayList<AstarState> explored;
 	private boolean euc;
-	
-	public Astar(boolean euc){
+
+	public Astar(boolean euc) {
 		this.euc = euc;
 		// Saving Goal state in order to use it to compute the H(n)
-		goalState.put(0, new Point(0,0));
-		goalState.put(1, new Point(0,1));
-		goalState.put(2, new Point(0,2));
-		goalState.put(3, new Point(1,0));
-		goalState.put(4, new Point(1,1));
-		goalState.put(5, new Point(1,2));
-		goalState.put(6, new Point(2,0));
-		goalState.put(7, new Point(2,1));
-		goalState.put(8, new Point(2,2));
+		goalState.put(0, new Point(0, 0));
+		goalState.put(1, new Point(0, 1));
+		goalState.put(2, new Point(0, 2));
+		goalState.put(3, new Point(1, 0));
+		goalState.put(4, new Point(1, 1));
+		goalState.put(5, new Point(1, 2));
+		goalState.put(6, new Point(2, 0));
+		goalState.put(7, new Point(2, 1));
+		goalState.put(8, new Point(2, 2));
 
-		
 	}
+
 	/***
 	 * Check if any of the State neighbours were explored before or not
+	 * 
 	 * @param arr
 	 * @return
 	 */
-	private boolean checkNotInExplored(int[][] arr){
-		for(AstarState s : explored){
-			if (Arrays.toString(s.getState().getGame()[0]).equals(Arrays.toString(arr[0])) 
-					&& Arrays.toString(s.getState().getGame()[1]).equals(Arrays.toString(arr[1])) 
-					&& Arrays.toString(s.getState().getGame()[2]).equals(Arrays.toString(arr[2])) 
-					){
+	private boolean checkNotInExplored(int[][] arr) {
+		for (AstarState s : explored) {
+			if (Arrays.toString(s.getState().getGame()[0]).equals(Arrays.toString(arr[0]))
+					&& Arrays.toString(s.getState().getGame()[1]).equals(Arrays.toString(arr[1]))
+					&& Arrays.toString(s.getState().getGame()[2]).equals(Arrays.toString(arr[2]))) {
 				return false;
 			}
 		}
 		return true;
 	}
+
 	/***
-	 * Computing H(n) using Manhattan heuristic or Euclidian heuristic using euc boolean
+	 * Computing H(n) using Manhattan heuristic or Euclidian heuristic using euc
+	 * boolean
+	 * 
 	 * @param arr
 	 * @return
 	 */
-	private int computeNewH(int [][] arr){
-		int h = 0 ;
-		
-		for (int i = 0 ; i < 3 ; i++){
-			for(int j = 0 ; j < 3 ; j++){
-				if(arr[i][j] == 0)
+	private int computeNewH(int[][] arr) {
+		int h = 0;
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (arr[i][j] == 0)
 					continue;
 				Point rightPos = goalState.get(arr[i][j]);
-				if(!euc)
-				h+= Math.abs(i-rightPos.x) + Math.abs(j-rightPos.y);
-				else{
-				h+= Math.sqrt(Math.pow((i-rightPos.x),2) + Math.pow(j-rightPos.y,2));
+				if (!euc)
+					h += Math.abs(i - rightPos.x) + Math.abs(j - rightPos.y);
+				else {
+					h += Math.sqrt(Math.pow((i - rightPos.x), 2) + Math.pow(j - rightPos.y, 2));
 				}
 			}
 		}
 		return h;
 	}
+
 	/***
-	 *  It searchs for the current neighbour in the frontier List.
-	 *  if it was present in frontier and it's cost > new cost then decrease it's key and change it's parent.
+	 * It searchs for the current neighbour in the frontier List. if it was present
+	 * in frontier and it's cost > new cost then decrease it's key and change it's
+	 * parent.
+	 * 
 	 * @param arr
 	 * @param cost
 	 * @param frontier
 	 * @return
 	 */
-	private boolean DecreaseKeyIfInFrontierAndNessesary(int[][] arr, int cost, PriorityQueue<AstarState> frontier){
-		for(AstarState s : frontier){
+	private boolean DecreaseKeyIfInFrontierAndNessesary(int[][] arr, int cost, PriorityQueue<AstarState> frontier) {
+		for (AstarState s : frontier) {
 
-			if (Arrays.toString(s.getState().getGame()[0]).equals(Arrays.toString(arr[0])) 
-					&& Arrays.toString(s.getState().getGame()[1]).equals(Arrays.toString(arr[1])) 
-					&& Arrays.toString(s.getState().getGame()[2]).equals(Arrays.toString(arr[2])) 
-					){
-				if(cost < s.getCost())
+			if (Arrays.toString(s.getState().getGame()[0]).equals(Arrays.toString(arr[0]))
+					&& Arrays.toString(s.getState().getGame()[1]).equals(Arrays.toString(arr[1]))
+					&& Arrays.toString(s.getState().getGame()[2]).equals(Arrays.toString(arr[2]))) {
+				if (cost < s.getCost())
 					s.setCost(cost);
-					s.getState().setParent(explored.get(explored.size()-1).getState());
+				s.getState().setParent(explored.get(explored.size() - 1).getState());
 				return false;
-			}	
+			}
 		}
 		return true;
 	}
-	
+
 	public boolean astarAlgo(State state) {
-		
+
 		AstarState initialState = new AstarState(state, 0, 0);
-		PriorityQueue<AstarState> frontier = new PriorityQueue<>(new Comparator <AstarState>() {
+		PriorityQueue<AstarState> frontier = new PriorityQueue<>(new Comparator<AstarState>() {
 
 			@Override
 			public int compare(AstarState arg0, AstarState arg1) {
-				if(arg0.getCost() < arg1.getCost())
-				return -1;
+				if (arg0.getCost() < arg1.getCost())
+					return -1;
 				return 1;
 			}
 		});
 		initialState.setH(computeNewH(initialState.getState().getGame()));
 		frontier.add(initialState);
-				
-		while(!frontier.isEmpty()){
-			
+
+		while (!frontier.isEmpty()) {
+
 			AstarState s = frontier.poll();
 			explored.add(s);
-			
-			if (s.getH() == 0){
+
+			if (s.getH() == 0) {
 				stopTime = System.currentTimeMillis();
 				elapsedTime = stopTime - startTime;
 				finalState = s;
@@ -121,26 +126,28 @@ public class Astar implements SearchInterface {
 			}
 			ArrayList<State> posN = s.getState().allPossibleNeighbours();
 
-			for(State st : posN){
+			for (State st : posN) {
 				boolean notExplored = checkNotInExplored(st.getGame());
 
 				int h;
-				if (notExplored){
-					h= computeNewH(st.getGame());
-						boolean notInFrontier = DecreaseKeyIfInFrontierAndNessesary(st.getGame(),s.getG()+1+h,frontier);
-						if(notInFrontier){
-							
-							s.getState().getNeighbours().add(st);
-							AstarState newAstarState = new AstarState(st, s.getG()+1, h);
-							frontier.add(newAstarState);
+				if (notExplored) {
+					h = computeNewH(st.getGame());
+					boolean notInFrontier = DecreaseKeyIfInFrontierAndNessesary(st.getGame(), s.getG() + 1 + h,
+							frontier);
+					if (notInFrontier) {
+
+						s.getState().getNeighbours().add(st);
+						AstarState newAstarState = new AstarState(st, s.getG() + 1, h);
+						frontier.add(newAstarState);
 					}
 				}
-				
+
 			}
-		}	
-		
+		}
+
 		return false;
 	}
+
 	@Override
 	public boolean search(int[] initialState) {
 		// TODO Auto-generated method stub
@@ -182,6 +189,7 @@ public class Astar implements SearchInterface {
 		State inital = new State(state, zeroIndex, null, null);
 		return astarAlgo(inital);
 	}
+
 	@Override
 	public ArrayList<String> pathToGoal() {
 		ArrayList<State> parents = new ArrayList<State>();
@@ -196,14 +204,17 @@ public class Astar implements SearchInterface {
 		}
 		return path;
 	}
+
 	@Override
 	public int pathCost() {
 		return finalState.getCost();
 	}
+
 	@Override
 	public int nodesExpanded() {
 		return explored.size();
 	}
+
 	@Override
 	public int searchDepth() {
 		int depth = -1;
@@ -215,9 +226,11 @@ public class Astar implements SearchInterface {
 
 		return depth;
 	}
-	public AstarState getFinalState(){
+
+	public AstarState getFinalState() {
 		return finalState;
 	}
+
 	@Override
 	public long runningTime() {
 		// TODO Auto-generated method stub

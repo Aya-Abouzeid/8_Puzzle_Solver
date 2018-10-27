@@ -26,6 +26,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import jdk.internal.org.objectweb.asm.Label;
 import algorithms.Astar;
 import algorithms.AstarState;
 import algorithms.BFS;
@@ -43,6 +44,10 @@ public class BeginSolver extends Application {
 	private GridPane gridPane = new GridPane();
 	private Thread backgroundThread;
 	private boolean solving = false;
+	private Label costL = new Label();
+	private Label timeL = new Label();
+	private Label nodesL = new Label();
+	private Label depthL = new Label();
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {

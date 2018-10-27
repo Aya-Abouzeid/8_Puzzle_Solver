@@ -1,4 +1,4 @@
-package src.algorithms;
+package algorithms;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class BFS implements SearchInterface {
 			return false;
 		}
 
-		State inital = new State(state, zeroIndex, null ,null);
+		State inital = new State(state, zeroIndex, null, null);
 
 		Queue<State> frontier = new LinkedList<State>();
 		explored = new ArrayList<State>();
@@ -114,7 +114,7 @@ public class BFS implements SearchInterface {
 			parents.add(s);
 			s = s.getParent();
 		}
-		for(int i = parents.size()-2 ; i >= 0 ; i-- ) {
+		for (int i = parents.size() - 2; i >= 0; i--) {
 			path.add(parents.get(i).getPath());
 		}
 		return path;
@@ -129,7 +129,7 @@ public class BFS implements SearchInterface {
 			cost++;
 			s = s.getParent();
 		}
-		
+
 		return cost;
 	}
 
@@ -137,7 +137,7 @@ public class BFS implements SearchInterface {
 	public int nodesExpanded() {
 		// TODO Auto-generated method stub
 		return explored.size();
-		
+
 	}
 
 	@Override
@@ -149,12 +149,14 @@ public class BFS implements SearchInterface {
 			depth++;
 			s = s.getParent();
 		}
-		
+
 		return depth;
 	}
-	public State getFinalState(){
+
+	public State getFinalState() {
 		return finalState;
 	}
+
 	@Override
 	public long runningTime() {
 		// TODO Auto-generated method stub
