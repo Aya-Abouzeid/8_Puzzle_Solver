@@ -14,9 +14,10 @@ public class Astar implements SearchInterface {
 	private long stopTime;
 	private AstarState finalState;
 	private ArrayList<AstarState> explored;
-
+	private boolean euc;
 	
-	public Astar(){
+	public Astar(boolean euc){
+		this.euc = euc;
 		// Saving Goal state in order to use it to compute the H(n)
 		goalState.put(0, new Point(0,0));
 		goalState.put(1, new Point(0,1));
@@ -47,21 +48,25 @@ public class Astar implements SearchInterface {
 		return true;
 	}
 	/***
-	 * Computing H(n) using Manhattan heuristic
+	 * Computing H(n) using Manhattan heuristic or Euclidian heuristic using euc boolean
 	 * @param arr
 	 * @return
 	 */
 	private int computeNewH(int [][] arr){
 		int h = 0 ;
+		
 		for (int i = 0 ; i < 3 ; i++){
 			for(int j = 0 ; j < 3 ; j++){
 				if(arr[i][j] == 0)
 					continue;
 				Point rightPos = goalState.get(arr[i][j]);
+				if(!euc)
 				h+= Math.abs(i-rightPos.x) + Math.abs(j-rightPos.y);
+				else{
+				h+= Math.sqrt(Math.pow((i-rightPos.x),2) + Math.pow(j-rightPos.y,2));
+				}
 			}
 		}
-		
 		return h;
 	}
 	/***
@@ -214,6 +219,9 @@ public class Astar implements SearchInterface {
 		}
 
 		return depth;
+	}
+	public AstarState getFinalState(){
+		return finalState;
 	}
 	@Override
 	public long runningTime() {

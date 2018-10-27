@@ -150,7 +150,9 @@ public class DFS implements SearchInterface {
 
 		return depth;
 	}
-
+	public State getFinalState(){
+		return finalState;
+	}
 	@Override
 	public long runningTime() {
 		// TODO Auto-generated method stub
