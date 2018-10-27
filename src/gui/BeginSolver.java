@@ -1,4 +1,4 @@
-package src.gui;
+package gui;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,11 +26,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import src.algorithms.Astar;
-import src.algorithms.AstarState;
-import src.algorithms.BFS;
-import src.algorithms.DFS;
-import src.algorithms.State;
+import algorithms.Astar;
+import algorithms.AstarState;
+import algorithms.BFS;
+import algorithms.DFS;
+import algorithms.State;
 
 public class BeginSolver extends Application {
 	private BFS bfs = new BFS();
@@ -42,6 +42,7 @@ public class BeginSolver extends Application {
 			Color.LIGHTSTEELBLUE, Color.AQUA, Color.ROSYBROWN, Color.KHAKI, Color.LIGHTPINK };
 	private GridPane gridPane = new GridPane();
 	private Thread backgroundThread;
+	private boolean solving = false;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -176,173 +177,174 @@ public class BeginSolver extends Application {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int[] initialState = handleGrid(gridPane);
+				if (!solving) {
+					solving = true;
+					int[] initialState = handleGrid(gridPane);
 
-				if (initialState != null) {
-					Runnable task = new Runnable() {
-						public void run() {
-							try {
-								boolean success = bfs.search(initialState);
-								if (success) {
-									System.out.println("Path Cost: " + bfs.pathCost());
-									System.out.println("Running Time: " + bfs.runningTime());
-									System.out.println("Nodes Expanded: " + bfs.nodesExpanded());
-									System.out.println("Depth: " + bfs.searchDepth());
-									System.out.println("Path to goal: ");
-									for (int k = 0; k < bfs.pathToGoal().size(); k++) {
-										System.out.print(" " + bfs.pathToGoal().get(k) + " ");
+					if (initialState != null) {
+						Runnable task = new Runnable() {
+							public void run() {
+								try {
+									boolean success = bfs.search(initialState);
+									if (success) {
+										System.out.println("Path Cost: " + bfs.pathCost());
+										System.out.println("Running Time: " + bfs.runningTime());
+										System.out.println("Nodes Expanded: " + bfs.nodesExpanded());
+										System.out.println("Depth: " + bfs.searchDepth());
+										System.out.println("Path to goal: ");
+										for (int k = 0; k < bfs.pathToGoal().size(); k++) {
+											System.out.print(" " + bfs.pathToGoal().get(k) + " ");
+										}
 									}
+
+									notifyGUI(success, 0);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-
-								notifyGUI(success, 0);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
-						}
-					};
+						};
 
-					// Run the task in a background thread
-					backgroundThread = new Thread(task);
-					// Terminate the running thread if the application exits
-					backgroundThread.setDaemon(true);
-					// Start the thread
-					backgroundThread.start();
-					System.out.println("Done");
+						// Run the task in a background thread
+						backgroundThread = new Thread(task);
+						// Terminate the running thread if the application exits
+						backgroundThread.setDaemon(true);
+						// Start the thread
+						backgroundThread.start();
+					}
 
 				}
-				System.out.println("success");
-
 			}
-
 		});
 
 		DFS.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int[] initialState = handleGrid(gridPane);
-				System.out.println("a");
+				if (!solving) {
+					solving = true;
+					int[] initialState = handleGrid(gridPane);
 
-				if (initialState != null) {
+					if (initialState != null) {
 
-					Runnable task = new Runnable() {
+						Runnable task = new Runnable() {
 
-						public void run() {
+							public void run() {
 
-							try {
-								boolean success = dfs.search(initialState);
-								if (success) {
-									System.out.println("Path Cost: " + dfs.pathCost());
-									System.out.println("Running Time: " + dfs.runningTime());
-									System.out.println("Nodes Expanded: " + dfs.nodesExpanded());
-									System.out.println("Depth: " + dfs.searchDepth());
-									System.out.println("Path to goal: ");
-									for (int k = 0; k < dfs.pathToGoal().size(); k++) {
-										System.out.print(" " + dfs.pathToGoal().get(k) + " ");
+								try {
+									boolean success = dfs.search(initialState);
+									if (success) {
+										System.out.println("Path Cost: " + dfs.pathCost());
+										System.out.println("Running Time: " + dfs.runningTime());
+										System.out.println("Nodes Expanded: " + dfs.nodesExpanded());
+										System.out.println("Depth: " + dfs.searchDepth());
+										System.out.println("Path to goal: ");
+										for (int k = 0; k < dfs.pathToGoal().size(); k++) {
+											System.out.print(" " + dfs.pathToGoal().get(k) + " ");
+										}
 									}
+									notifyGUI(success, 1);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-								notifyGUI(success, 1);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
-						}
-					};
+						};
 
-					// Run the task in a background thread
-					backgroundThread = new Thread(task);
-					// Terminate the running thread if the application exits
+						// Run the task in a background thread
+						backgroundThread = new Thread(task);
+						// Terminate the running thread if the application exits
 
-					backgroundThread.setDaemon(true);
-					// Start the thread
+						backgroundThread.setDaemon(true);
+						// Start the thread
 
-					backgroundThread.start();
-					System.out.println("Done");
+						backgroundThread.start();
+					}
 				}
-				System.out.println("success");
 			}
 		});
 		A1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int[] initialState = handleGrid(gridPane);
-				if (initialState != null) {
-					aStar = new Astar(false);
-					Runnable task = new Runnable() {
-						public void run() {
-							try {
-								boolean success = aStar.search(initialState);
-								if (success) {
-									System.out.println("Path Cost: " + aStar.pathCost());
-									System.out.println("Running Time: " + aStar.runningTime());
-									System.out.println("Nodes Expanded: " + aStar.nodesExpanded());
-									System.out.println("Depth: " + aStar.searchDepth());
-									System.out.println("Path to goal: ");
-									for (int k = 0; k < aStar.pathToGoal().size(); k++) {
-										System.out.print(" " + aStar.pathToGoal().get(k) + " ");
+				if (!solving) {
+					solving = true;
+					int[] initialState = handleGrid(gridPane);
+					if (initialState != null) {
+						aStar = new Astar(false);
+						Runnable task = new Runnable() {
+							public void run() {
+								try {
+									boolean success = aStar.search(initialState);
+									if (success) {
+										System.out.println("Path Cost: " + aStar.pathCost());
+										System.out.println("Running Time: " + aStar.runningTime());
+										System.out.println("Nodes Expanded: " + aStar.nodesExpanded());
+										System.out.println("Depth: " + aStar.searchDepth());
+										System.out.println("Path to goal: ");
+										for (int k = 0; k < aStar.pathToGoal().size(); k++) {
+											System.out.print(" " + aStar.pathToGoal().get(k) + " ");
+										}
 									}
+									notifyGUI(success, 2);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-								notifyGUI(success, 2);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
-						}
-					};
+						};
 
-					// Run the task in a background thread
-					backgroundThread = new Thread(task);
-					// Terminate the running thread if the application exits
-					backgroundThread.setDaemon(true);
-					// Start the thread
-					backgroundThread.start();
+						// Run the task in a background thread
+						backgroundThread = new Thread(task);
+						// Terminate the running thread if the application exits
+						backgroundThread.setDaemon(true);
+						// Start the thread
+						backgroundThread.start();
 
+					}
 				}
-				System.out.println("success");
 			}
 		});
 		A2.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				int[] initialState = handleGrid(gridPane);
-				if (initialState != null) {
-					aStar = new Astar(true);
-					Runnable task = new Runnable() {
-						public void run() {
-							try {
-								boolean success = aStar.search(initialState);
-								if (success) {
-									System.out.println("Path Cost: " + aStar.pathCost());
-									System.out.println("Running Time: " + aStar.runningTime());
-									System.out.println("Nodes Expanded: " + aStar.nodesExpanded());
-									System.out.println("Depth: " + aStar.searchDepth());
-									System.out.println("Path to goal: ");
-									for (int k = 0; k < aStar.pathToGoal().size(); k++) {
-										System.out.print(" " + aStar.pathToGoal().get(k) + " ");
+				if (!solving) {
+					solving = true;
+					int[] initialState = handleGrid(gridPane);
+					if (initialState != null) {
+						aStar = new Astar(true);
+						Runnable task = new Runnable() {
+							public void run() {
+								try {
+									boolean success = aStar.search(initialState);
+									if (success) {
+										System.out.println("Path Cost: " + aStar.pathCost());
+										System.out.println("Running Time: " + aStar.runningTime());
+										System.out.println("Nodes Expanded: " + aStar.nodesExpanded());
+										System.out.println("Depth: " + aStar.searchDepth());
+										System.out.println("Path to goal: ");
+										for (int k = 0; k < aStar.pathToGoal().size(); k++) {
+											System.out.print(" " + aStar.pathToGoal().get(k) + " ");
+										}
 									}
+									notifyGUI(success, 2);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-								notifyGUI(success, 2);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
-						}
-					};
+						};
 
-					// Run the task in a background thread
-					backgroundThread = new Thread(task);
-					// Terminate the running thread if the application exits
-					backgroundThread.setDaemon(true);
-					// Start the thread
-					backgroundThread.start();
-					System.out.println("Done");
+						// Run the task in a background thread
+						backgroundThread = new Thread(task);
+						// Terminate the running thread if the application exits
+						backgroundThread.setDaemon(true);
+						// Start the thread
+						backgroundThread.start();
+					}
 				}
-				System.out.println("success");
 			}
-
 		});
 
 		reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -351,6 +353,7 @@ public class BeginSolver extends Application {
 			public void handle(MouseEvent arg0) {
 
 				// clear text fields
+				solving = false;
 				for (Node n : gridPane.getChildren()) {
 					String className = n.getClass().getName().split("\\.")[3];
 					if (className.equals("TextField")) {
@@ -376,7 +379,6 @@ public class BeginSolver extends Application {
 				s = dfs.getFinalState();
 			if (algorithm == 2)
 				s = aStar.getFinalState().getState();
-			System.out.println(s == null);
 			while (s != null) {
 				allPath.add(s.getGame());
 				s = s.getParent();
