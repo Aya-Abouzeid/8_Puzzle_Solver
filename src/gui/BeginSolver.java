@@ -183,8 +183,18 @@ public class BeginSolver extends Application {
 					Runnable task = new Runnable() {
 						public void run() {
 							try {
-								boolean sucess = bfs.search(initialState);
-								notifyGUI(sucess);
+								boolean success = bfs.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+bfs.pathCost());
+								System.out.println("Running Time: "+bfs.runningTime());
+								System.out.println("Nodes Expanded: "+bfs.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < bfs.pathToGoal().size();k++){
+									System.out.print(" "+bfs.pathToGoal().get(k)+" ");
+								}
+								}
+
+								notifyGUI(success,0);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -212,42 +222,86 @@ public class BeginSolver extends Application {
 			@Override
 			public void handle(MouseEvent arg0) {
 				int[] initialState = handleGrid(gridPane);
-				ArrayList<int[][]> allPath = new ArrayList<>();
-				if (initialState != null) {
-					if (dfs.search(initialState)) {
-						State s = dfs.getFinalState();
-						while (s != null) {
-							allPath.add(s.getGame());
-							s = s.getParent();
-						}
-						for (int i = allPath.size() - 1; i > -1; i--) {
-							show(gridPane, allPath.get(i));
-						}
-					}
-				}
-				System.out.println("Done");
+				System.out.println("a");
 
+				if (initialState != null) {
+
+					Runnable task = new Runnable() {
+						
+						public void run() {
+
+							try {
+								boolean success = dfs.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+dfs.pathCost());
+								System.out.println("Running Time: "+dfs.runningTime());
+								System.out.println("Nodes Expanded: "+dfs.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < dfs.pathToGoal().size();k++){
+									System.out.print(" "+dfs.pathToGoal().get(k)+" ");
+								}
+								}
+								notifyGUI(success,1);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								System.out.println("e");
+
+								e.printStackTrace();
+							}
+						}
+					};
+					System.out.println("f");
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					System.out.println("g");
+
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					System.out.println("h");
+
+					backgroundThread.start();
+					System.out.println("Done");
 			}
+		}
 		});
 		A1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent arg0) {
 				int[] initialState = handleGrid(gridPane);
-				ArrayList<int[][]> allPath = new ArrayList<>();
 				if (initialState != null) {
 					aStar = new Astar(false);
-					if (aStar.search(initialState)) {
-						AstarState finalState = aStar.getFinalState();
-						State s = finalState.getState();
-						while (s != null) {
-							allPath.add(s.getGame());
-							s = s.getParent();
+					Runnable task = new Runnable() {
+						public void run() {
+							try {
+								boolean success = aStar.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+aStar.pathCost());
+								System.out.println("Running Time: "+aStar.runningTime());
+								System.out.println("Nodes Expanded: "+aStar.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < aStar.pathToGoal().size();k++){
+									System.out.print(" "+aStar.pathToGoal().get(k)+" ");
+								}
+								}
+								notifyGUI(success,2);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
-						for (int i = allPath.size() - 1; i > -1; i--) {
-							show(gridPane, allPath.get(i));
-						}
-					}
+					};
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					backgroundThread.start();
+					
+
 				}
 			}
 		});
@@ -256,22 +310,39 @@ public class BeginSolver extends Application {
 			@Override
 			public void handle(MouseEvent arg0) {
 				int[] initialState = handleGrid(gridPane);
-				ArrayList<int[][]> allPath = new ArrayList<>();
 				if (initialState != null) {
 					aStar = new Astar(true);
-					if (aStar.search(initialState)) {
-						AstarState finalState = aStar.getFinalState();
-						State s = finalState.getState();
-						while (s != null) {
-							allPath.add(s.getGame());
-							s = s.getParent();
+					Runnable task = new Runnable() {
+						public void run() {
+							try {
+								boolean success = aStar.search(initialState);
+								if(success){
+								System.out.println("Path Cost: "+aStar.pathCost());
+								System.out.println("Running Time: "+aStar.runningTime());
+								System.out.println("Nodes Expanded: "+aStar.nodesExpanded());
+								System.out.println("Path to goal: ");
+								for(int k = 0 ; k < aStar.pathToGoal().size();k++){
+									System.out.print(" "+aStar.pathToGoal().get(k)+" ");
+								}
+								}
+								notifyGUI(success,2);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
-						for (int i = allPath.size() - 1; i > -1; i--) {
-							show(gridPane, allPath.get(i));
-						}
-					}
+					};
+
+					// Run the task in a background thread
+					backgroundThread = new Thread(task);
+					// Terminate the running thread if the application exits
+					backgroundThread.setDaemon(true);
+					// Start the thread
+					backgroundThread.start();
+					System.out.println("Done");
 				}
 			}
+			
 		});
 
 		reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -293,12 +364,20 @@ public class BeginSolver extends Application {
 
 	}
 
-	public void notifyGUI(boolean success) throws InterruptedException {
-		System.out.println("reached here");
+	public void notifyGUI(boolean success , int algorithm) throws InterruptedException {
+		System.out.println("there");
 
 		if (success) {
+			System.out.println("theere");
+
+			State s=null ;
 			allPath = new ArrayList<>();
-			State s = bfs.getFinalState();
+			if(algorithm == 0)
+				s = bfs.getFinalState();
+			if(algorithm == 1)
+				s = dfs.getFinalState();
+			if(algorithm == 2)
+				s = aStar.getFinalState().getState();
 			System.out.println(s == null);
 			while (s != null) {
 				allPath.add(s.getGame());
