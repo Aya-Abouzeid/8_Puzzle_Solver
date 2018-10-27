@@ -1,21 +1,23 @@
 package gui;
 
-import java.io.File;
 import java.sql.SQLException;
-import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -27,8 +29,6 @@ public class BeginSolver extends Application {
 	private Scene scene;
 	private Color[] colors = { Color.LIGHTSKYBLUE, Color.SANDYBROWN, Color.THISTLE, Color.PALEGREEN,
 			Color.LIGHTSTEELBLUE, Color.AQUA, Color.ROSYBROWN, Color.KHAKI, Color.LIGHTPINK };
-	private Random rand = new Random();
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
@@ -46,7 +46,6 @@ public class BeginSolver extends Application {
 
 	private void addFields(GridPane gridPane, Stage primaryStage) {
 		gridPane.setAlignment(Pos.CENTER);
-		String numbers = "";
 		int n = 0;
 		for (int row = 0; row < 3; row++) {
 			for (int col = 0; col < 3; col++) {
@@ -55,7 +54,7 @@ public class BeginSolver extends Application {
 				rec.setWidth(100);
 				rec.setHeight(100);
 				rec.setFill(colors[n]);
-				gridPane.add(rec, row, col);
+				gridPane.add(rec, col, row);
 				inputField.setBackground(Background.EMPTY);
 				inputField.setPrefWidth(60);
 				inputField.setPrefHeight(60);
@@ -63,13 +62,13 @@ public class BeginSolver extends Application {
 						"-fx-font-size: 46px; -fx-font-family: Quicksand; -fx-font-weight: bold; -fx-alignment: center;");
 				inputField.setTextFormatter(new TextFormatter<String>((Change change) -> {
 					String newText = change.getControlNewText();
-					if (newText.length() > 1 || !newText.matches("[0-9]")) {
+					if (newText.length() > 1 || !(newText.matches("[0-8]") || newText.isEmpty())) {
 						return null;
 					} else {
 						return change;
 					}
 				}));
-				gridPane.add(inputField, row, col);
+				gridPane.add(inputField, col, row);
 				n++;
 			}
 		}
@@ -96,6 +95,35 @@ public class BeginSolver extends Application {
 
 			@Override
 			public void handle(MouseEvent arg0) {
+				
+				Set<String> set = new HashSet<>();
+				// get puzzle text
+				for (Node n : gridPane.getChildren()) {
+					String className = n.getClass().getName().split("\\.")[3];
+					if (className.equals("TextField")) {
+						TextField temp = (TextField) n;
+						set.add(temp.getText());
+					}
+				}
+				// Show error message in case of similar digits exist
+				if(set.size() < 9) {
+					Alert alert = new Alert(AlertType.ERROR, "Invalid table, cell digits must be different !", ButtonType.OK);
+					alert.showAndWait();
+				}else {
+					int[] initialState = new int[9];
+					int i = 0;
+					for (Node n : gridPane.getChildren()) {
+						String className = n.getClass().getName().split("\\.")[3];
+						if (className.equals("TextField")) {
+							TextField textField = (TextField) n;
+							textField.setEditable(false);
+							
+							initialState[i++] = textField.getText().isEmpty() ? 0 : Integer.parseInt(textField.getText());
+						}
+					}
+					for(int j : initialState)
+						System.out.println(j);
+				}
 
 			}
 		});
@@ -103,8 +131,15 @@ public class BeginSolver extends Application {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				for (int i = 0; i < 9; i++) {
-					addFields(gridPane, primaryStage);
+				
+				// clear text fields
+				for (Node n : gridPane.getChildren()) {
+					String className = n.getClass().getName().split("\\.")[3];
+					if (className.equals("TextField")) {
+						TextField textField = (TextField) n;
+						textField.clear();
+						textField.setEditable(true);
+					}
 				}
 			}
 		});
@@ -112,6 +147,10 @@ public class BeginSolver extends Application {
 	}
 
 	public void startApp(String args[]) throws ClassNotFoundException, SQLException {
+		launch(args);
+	}
+
+	public static void main(String[] args) {
 		launch(args);
 	}
 

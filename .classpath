@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/Amira/Downloads/javafx-0.2-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Amira/Downloads/javafx-0.2-sources.jar.zip"/>
+=======
+	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/lib/ant-javafx.jar"/>
+	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/lib/javafx-mx.jar"/>
+	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jfxswt.jar"/>
+	<classpathentry kind="lib" path="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/jfxrt.jar"/>
+>>>>>>> 3dba95ad3eb7d92823c8a0f6d365ee5c296df0d2
 	<classpathentry kind="output" path="bin"/>
 </classpath>
