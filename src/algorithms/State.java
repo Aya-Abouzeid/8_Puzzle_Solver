@@ -20,7 +20,7 @@ public class State {
 	public State getParent() {
 		return parent;
 	}
-	
+
 	public String getPath() {
 		return path;
 	}
@@ -63,7 +63,7 @@ public class State {
 
 		ArrayList<State> neigh = new ArrayList<>();
 
-		if (zeroPosition.y + 1 < 3 &&  !( this.parent != null && zeroPosition.y + 1 == this.parent.zeroPosition.y )) {
+		if (zeroPosition.y + 1 < 3 && !(this.parent != null && zeroPosition.y + 1 == this.parent.zeroPosition.y)) {
 			int[][] n = new int[this.game.length][];
 			for (int i = 0; i < n.length; ++i) {
 				n[i] = new int[this.game[i].length];
@@ -73,11 +73,11 @@ public class State {
 				}
 			}
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x, zeroPosition.y + 1);
-			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y + 1), this ,"Right"));
+			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y + 1), this, "Right"));
 
 		}
-		
-		if (zeroPosition.x - 1 >= 0 && !( this.parent != null && zeroPosition.x - 1 == this.parent.zeroPosition.x)) {
+
+		if (zeroPosition.x - 1 >= 0 && !(this.parent != null && zeroPosition.x - 1 == this.parent.zeroPosition.x)) {
 
 			int[][] n = new int[this.game.length][];
 			for (int i = 0; i < n.length; ++i) {
@@ -88,29 +88,26 @@ public class State {
 				}
 			}
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x - 1, zeroPosition.y);
-			neigh.add(new State(n, new Point(zeroPosition.x - 1, zeroPosition.y), this , "Up"));
+			neigh.add(new State(n, new Point(zeroPosition.x - 1, zeroPosition.y), this, "Up"));
 
 		}
-		
-		if (zeroPosition.x + 1 < 3 && !( this.parent != null && zeroPosition.x + 1 == this.parent.zeroPosition.x)) {
+
+		if (zeroPosition.x + 1 < 3 && !(this.parent != null && zeroPosition.x + 1 == this.parent.zeroPosition.x)) {
 			int[][] n = new int[this.game.length][];
 			for (int i = 0; i < n.length; ++i) {
 				n[i] = new int[this.game[i].length];
 				for (int j = 0; j < n[i].length; ++j) {
-					
+
 					n[i][j] = this.game[i][j];
 				}
 			}
-			
+
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x + 1, zeroPosition.y);
-			
-			neigh.add(new State(n, new Point(zeroPosition.x + 1, zeroPosition.y), this , "Down"));
+
+			neigh.add(new State(n, new Point(zeroPosition.x + 1, zeroPosition.y), this, "Down"));
 		}
 
-
-		
-
-		if (zeroPosition.y - 1 >= 0 &&  !( this.parent != null && zeroPosition.y - 1 == this.parent.zeroPosition.y )) {
+		if (zeroPosition.y - 1 >= 0 && !(this.parent != null && zeroPosition.y - 1 == this.parent.zeroPosition.y)) {
 			int[][] n = new int[this.game.length][];
 			for (int i = 0; i < n.length; ++i) {
 				n[i] = new int[this.game[i].length];
@@ -120,7 +117,7 @@ public class State {
 				}
 			}
 			swap(n, zeroPosition.x, zeroPosition.y, zeroPosition.x, zeroPosition.y - 1);
-			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y - 1), this , "Left"));
+			neigh.add(new State(n, new Point(zeroPosition.x, zeroPosition.y - 1), this, "Left"));
 
 		}
 

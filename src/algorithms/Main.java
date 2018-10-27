@@ -1,6 +1,4 @@
-package algorithms;
-
-import java.awt.Point;
+package src.algorithms;
 
 public class Main {
 

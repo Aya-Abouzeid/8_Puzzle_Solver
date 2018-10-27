@@ -177,24 +177,24 @@ public class BeginSolver extends Application {
 			@Override
 			public void handle(MouseEvent arg0) {
 				int[] initialState = handleGrid(gridPane);
-				System.out.println(initialState != null);
 
 				if (initialState != null) {
 					Runnable task = new Runnable() {
 						public void run() {
 							try {
 								boolean success = bfs.search(initialState);
-								if(success){
-								System.out.println("Path Cost: "+bfs.pathCost());
-								System.out.println("Running Time: "+bfs.runningTime());
-								System.out.println("Nodes Expanded: "+bfs.nodesExpanded());
-								System.out.println("Path to goal: ");
-								for(int k = 0 ; k < bfs.pathToGoal().size();k++){
-									System.out.print(" "+bfs.pathToGoal().get(k)+" ");
-								}
+								if (success) {
+									System.out.println("Path Cost: " + bfs.pathCost());
+									System.out.println("Running Time: " + bfs.runningTime());
+									System.out.println("Nodes Expanded: " + bfs.nodesExpanded());
+									System.out.println("Depth: " + bfs.searchDepth());
+									System.out.println("Path to goal: ");
+									for (int k = 0; k < bfs.pathToGoal().size(); k++) {
+										System.out.print(" " + bfs.pathToGoal().get(k) + " ");
+									}
 								}
 
-								notifyGUI(success,0);
+								notifyGUI(success, 0);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -227,44 +227,41 @@ public class BeginSolver extends Application {
 				if (initialState != null) {
 
 					Runnable task = new Runnable() {
-						
+
 						public void run() {
 
 							try {
 								boolean success = dfs.search(initialState);
-								if(success){
-								System.out.println("Path Cost: "+dfs.pathCost());
-								System.out.println("Running Time: "+dfs.runningTime());
-								System.out.println("Nodes Expanded: "+dfs.nodesExpanded());
-								System.out.println("Path to goal: ");
-								for(int k = 0 ; k < dfs.pathToGoal().size();k++){
-									System.out.print(" "+dfs.pathToGoal().get(k)+" ");
+								if (success) {
+									System.out.println("Path Cost: " + dfs.pathCost());
+									System.out.println("Running Time: " + dfs.runningTime());
+									System.out.println("Nodes Expanded: " + dfs.nodesExpanded());
+									System.out.println("Depth: " + dfs.searchDepth());
+									System.out.println("Path to goal: ");
+									for (int k = 0; k < dfs.pathToGoal().size(); k++) {
+										System.out.print(" " + dfs.pathToGoal().get(k) + " ");
+									}
 								}
-								}
-								notifyGUI(success,1);
+								notifyGUI(success, 1);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
-								System.out.println("e");
-
 								e.printStackTrace();
 							}
 						}
 					};
-					System.out.println("f");
 
 					// Run the task in a background thread
 					backgroundThread = new Thread(task);
 					// Terminate the running thread if the application exits
-					System.out.println("g");
 
 					backgroundThread.setDaemon(true);
 					// Start the thread
-					System.out.println("h");
 
 					backgroundThread.start();
 					System.out.println("Done");
+				}
+				System.out.println("success");
 			}
-		}
 		});
 		A1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -277,16 +274,17 @@ public class BeginSolver extends Application {
 						public void run() {
 							try {
 								boolean success = aStar.search(initialState);
-								if(success){
-								System.out.println("Path Cost: "+aStar.pathCost());
-								System.out.println("Running Time: "+aStar.runningTime());
-								System.out.println("Nodes Expanded: "+aStar.nodesExpanded());
-								System.out.println("Path to goal: ");
-								for(int k = 0 ; k < aStar.pathToGoal().size();k++){
-									System.out.print(" "+aStar.pathToGoal().get(k)+" ");
+								if (success) {
+									System.out.println("Path Cost: " + aStar.pathCost());
+									System.out.println("Running Time: " + aStar.runningTime());
+									System.out.println("Nodes Expanded: " + aStar.nodesExpanded());
+									System.out.println("Depth: " + aStar.searchDepth());
+									System.out.println("Path to goal: ");
+									for (int k = 0; k < aStar.pathToGoal().size(); k++) {
+										System.out.print(" " + aStar.pathToGoal().get(k) + " ");
+									}
 								}
-								}
-								notifyGUI(success,2);
+								notifyGUI(success, 2);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -300,9 +298,9 @@ public class BeginSolver extends Application {
 					backgroundThread.setDaemon(true);
 					// Start the thread
 					backgroundThread.start();
-					
 
 				}
+				System.out.println("success");
 			}
 		});
 		A2.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -316,16 +314,17 @@ public class BeginSolver extends Application {
 						public void run() {
 							try {
 								boolean success = aStar.search(initialState);
-								if(success){
-								System.out.println("Path Cost: "+aStar.pathCost());
-								System.out.println("Running Time: "+aStar.runningTime());
-								System.out.println("Nodes Expanded: "+aStar.nodesExpanded());
-								System.out.println("Path to goal: ");
-								for(int k = 0 ; k < aStar.pathToGoal().size();k++){
-									System.out.print(" "+aStar.pathToGoal().get(k)+" ");
+								if (success) {
+									System.out.println("Path Cost: " + aStar.pathCost());
+									System.out.println("Running Time: " + aStar.runningTime());
+									System.out.println("Nodes Expanded: " + aStar.nodesExpanded());
+									System.out.println("Depth: " + aStar.searchDepth());
+									System.out.println("Path to goal: ");
+									for (int k = 0; k < aStar.pathToGoal().size(); k++) {
+										System.out.print(" " + aStar.pathToGoal().get(k) + " ");
+									}
 								}
-								}
-								notifyGUI(success,2);
+								notifyGUI(success, 2);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -341,8 +340,9 @@ public class BeginSolver extends Application {
 					backgroundThread.start();
 					System.out.println("Done");
 				}
+				System.out.println("success");
 			}
-			
+
 		});
 
 		reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -364,19 +364,17 @@ public class BeginSolver extends Application {
 
 	}
 
-	public void notifyGUI(boolean success , int algorithm) throws InterruptedException {
-		System.out.println("there");
+	public void notifyGUI(boolean success, int algorithm) throws InterruptedException {
 
 		if (success) {
-			System.out.println("theere");
 
-			State s=null ;
+			State s = null;
 			allPath = new ArrayList<>();
-			if(algorithm == 0)
+			if (algorithm == 0)
 				s = bfs.getFinalState();
-			if(algorithm == 1)
+			if (algorithm == 1)
 				s = dfs.getFinalState();
-			if(algorithm == 2)
+			if (algorithm == 2)
 				s = aStar.getFinalState().getState();
 			System.out.println(s == null);
 			while (s != null) {
