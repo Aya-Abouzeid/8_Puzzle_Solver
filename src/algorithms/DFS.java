@@ -18,11 +18,15 @@ public class DFS implements SearchInterface {
 		explored = new ArrayList<>();
 	}
 
+	/**
+	 * DFS algorithm
+	 * */
 	public boolean dfs(State startState) {
 		Stack<State> frontier = new Stack<>();
 
 		frontier.push(startState);
-
+		
+		// while there exist non explored nodes
 		while (!frontier.isEmpty()) {
 			State s = frontier.pop();
 			explored.add(s);
@@ -45,6 +49,9 @@ public class DFS implements SearchInterface {
 		return false;
 	}
 
+	/**
+	 * check if a state is exist in the frontier or not
+	 * */
 	private boolean inFrontier(State neighbour, Stack<State> frontier) {
 		for (State s : frontier)
 			if (neighbour.areEqual(s.getGame()))
@@ -53,6 +60,9 @@ public class DFS implements SearchInterface {
 		return false;
 	}
 
+	/**
+	 * check if a state is exist in the explored set or not
+	 * */
 	private boolean inExplored(State neighbour, ArrayList<State> explored2) {
 		for (State s : explored2)
 			if (neighbour.areEqual(s.getGame()))
@@ -60,7 +70,11 @@ public class DFS implements SearchInterface {
 
 		return false;
 	}
-
+	
+	/**
+	 * search for a given initial state to the goal
+	 * return false if the goal isn't reachable
+	 * */
 	@Override
 	public boolean search(int[] initialState) {
 		// TODO Auto-generated method stub
@@ -103,6 +117,9 @@ public class DFS implements SearchInterface {
 		return dfs(inital);
 	}
 
+	/**
+	 * returns array list contains the path taken to reach the goal
+	 * */
 	@Override
 	public ArrayList<String> pathToGoal() {
 		// TODO Auto-generated method stub
